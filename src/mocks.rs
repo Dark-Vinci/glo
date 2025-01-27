@@ -15,23 +15,26 @@ fn melon(abc: &dyn SuperTrait) -> u32 {
 }
 
 #[cfg(test)]
-mod tests {
-    use mockall::mock;
-    use super::*;
+use mockall::mock;
 
-    mock!{
-        pub Nine{}
+#[cfg(test)]
+mock!{
+    pub Nine{}
 
-        impl SuperTrait for Nine {
-            fn do_something(&self) -> String {
-                "this is something".to_string()
-            }
-        }
-
-        impl ChildTrait for Nine {
-            fn do_more(&self) -> u32 {0}
+    impl SuperTrait for Nine {
+        fn do_something(&self) -> String {
+            "this is something".to_string()
         }
     }
+
+    impl ChildTrait for Nine {
+        fn do_more(&self) -> u32 {0}
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
 
     #[test]
     fn test_child_trait_mock() {
@@ -45,14 +48,5 @@ mod tests {
         let res = melon(&mock);
 
         assert_eq!(res, 0);
-
-        // mock.expect_do_more()
-        //     .returning(|| 42);
-        //
-        // // Test `do_something` (from `SuperTrait`)
-        // assert_eq!(mock.do_something(), "mocked");
-        //
-        // // Test `do_more` (from `ChildTrait`)
-        // assert_eq!(mock.do_more(), 42);
     }
 }
